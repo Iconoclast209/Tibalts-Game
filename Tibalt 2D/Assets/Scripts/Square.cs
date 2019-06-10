@@ -12,6 +12,7 @@ public class Square : MonoBehaviour
     int playerControl = 0;
     int bubblesStacked = 0;
     Image image;
+    Text text;
     RectTransform rectTransform;
     GameController gameController;
 
@@ -36,22 +37,25 @@ public class Square : MonoBehaviour
         image = GetComponent<Image>();
         gameController = FindObjectOfType<GameController>();
         rectTransform = GetComponent<RectTransform>();
-       
+        text = gameObject.GetComponentInChildren<Text>();
     }
 
    
     public void HandleClick()
     {
-        Debug.Log("Mouse Clicked.");
         if(!isSelected)
         {
             SelectThisSquare();
         }
         else
         {
-            if (!isControlled)
+            if(gameController.CurrentAction == SelectedAction.seed && isControlled == false)
             {
-                TakeOwnership(3, Color.green);
+                SeedThisSquare();
+            }
+            else if(gameController.CurrentAction == SelectedAction.stack && playerControl == gameController.CurrentPlayerTurn)
+            {
+                StackThisSquare();
             }
         }
         
@@ -61,15 +65,25 @@ public class Square : MonoBehaviour
     {
         isSelected = true;
         image.color = gameController.SelectedColor;
-        Debug.Log("This square has been selected.");
     }
-    
+
+    void StackThisSquare()
+    {
+        bubblesStacked++;
+        text.text = bubblesStacked.ToString();
+    }
+
     //This function will take ownership of a square and stack one bubble on it.
-    void TakeOwnership(int player, Color color)
+    void SeedThisSquare()
     {
         isControlled = true;
-        playerControl = player;
+        //Set controlled by current player
+        playerControl = gameController.CurrentPlayerTurn;
+        //Add one bubble to the squre's stack
         bubblesStacked++;
-        image.color = color;
+        text.text = bubblesStacked.ToString();
+        // Set the square's color to the player color.
+        image.color = gameController.ReturnCurrentPlayerColor();
+
     }
 }

@@ -24,10 +24,12 @@ public class GameController : MonoBehaviour
 
     //NOT visible in inspector
     int numberOfPlayers = 2;
-    int playerTurn = 0;
+    int playerTurn = 1;
     public Square[] squares;
     SelectedAction currentAction = SelectedAction.hold;
     Color selectedColor = Color.yellow;
+    Color player1Color = Color.green;
+    Color player2Color = Color.red;
     
 
 
@@ -40,7 +42,7 @@ public class GameController : MonoBehaviour
         get { return currentAction; }
     }
 
-    public int PlayerTurn
+    public int CurrentPlayerTurn
     {
         get { return playerTurn; }
     }
@@ -48,6 +50,13 @@ public class GameController : MonoBehaviour
     public Color SelectedColor
     {
         get { return selectedColor; }
+    }
+    public Color ReturnCurrentPlayerColor()
+    {
+        if (CurrentPlayerTurn == 1)
+            return player1Color;
+        else
+            return player2Color;
     }
 
 
@@ -63,17 +72,16 @@ public class GameController : MonoBehaviour
         Debug.Log(SelectedAction.seed);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SeedButtonClicked()
     {
         currentAction = SelectedAction.seed;
-    
-
     }
+
+    public void StackButtonClicked()
+    {
+        currentAction = SelectedAction.stack;
+    }
+
+
     #endregion
 }
