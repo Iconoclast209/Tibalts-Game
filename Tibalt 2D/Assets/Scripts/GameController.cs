@@ -59,7 +59,7 @@ public class GameController : MonoBehaviour
     Image stackButtonImage;
     Image progressButtonImage;
     Image endTurnButtonImage;
-    Dictionary<Vector2, GameObject> squareDictioanry = new Dictionary<Vector2, GameObject>();
+    Dictionary<Vector2, Square> squareDictioanry = new Dictionary<Vector2, Square>();
     
 
 
@@ -177,9 +177,42 @@ public class GameController : MonoBehaviour
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayerTurn)
             {
                 //Then find the adjacent squares that are not controlled
+                //FindAdjacentUncontrolledSquares(sq);
             }
         }
     }
+
+    //This Method will return a list of adjacent squares which can be highlighted for the seeding.
+    List<Square> FindAdjacentUncontrolledSquares(Square sq)
+    {
+        //locate all adjacent squares and put them in a list to return.
+
+        List<Square> squaresToHighlight = new List<Square>();
+
+        for (int x = sq.Location.x-1; x <= sq.Location.x+1; x++)
+        {
+            for (int y = sq.Location.y - 1; y <= sq.Location.y+1; y++)
+            {
+                //Create a key to use to look in dictionary
+                Vector2 key = new Vector2(x, y);
+                //Look in Dictionary with key, if the reference to a square returned is NOT null,then add it to the squaresToHighlight
+                if (squareDictioanry.TryGetValue(key, out value) != null)
+                {
+                    squaresToHighlight.Add(value);
+                }
+            }
+        }
+
+        if (squaresToHighlight.Count > 0)
+        {
+            return squaresToHighlight;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
 
     #endregion
 }
