@@ -49,6 +49,8 @@ public class Square : MonoBehaviour
         gameController = FindObjectOfType<GameController>();
         rectTransform = GetComponent<RectTransform>();
         text = gameObject.GetComponentInChildren<Text>();
+        //TO DO:  Verify the line below.
+        text.SetActive(false);
         location = new Vector2((rectTransform.anchoredPosition.x + 400) / 100, (rectTransform.anchoredPosition.y + 400) / 100);
     }
 
@@ -76,12 +78,18 @@ public class Square : MonoBehaviour
     void SelectThisSquare()
     {
         isSelected = true;
+        //
+        //TO DO:  Replace with a outline indicator rather than color, since
+        //        selecting a cell can occur with a controlled cell, or a cell with a unit on it.
         image.color = gameController.SelectedColor;
     }
 
     public void UnSelectThisSquare()
     {
         isSelected = false;
+        //
+        //TO DO:  Revert to previous sprite.
+        //        
         image.color = Color.white;
     }
 
@@ -100,6 +108,7 @@ public class Square : MonoBehaviour
         //Add one bubble to the squre's stack
         bubblesStacked++;
         text.text = bubblesStacked.ToString();
+        //TO DO: Replace with sprite for player color.
         // Set the square's color to the player color.
         image.color = gameController.ReturnCurrentPlayerColor();
 
