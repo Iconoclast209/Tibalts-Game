@@ -59,7 +59,7 @@ public class GameController : MonoBehaviour
     Image stackButtonImage;
     Image progressButtonImage;
     Image endTurnButtonImage;
-    Dictionary<Vector2, Square> squareDictioanry = new Dictionary<Vector2, Square>();
+    Dictionary<Vector2, Square> squareDictionary = new Dictionary<Vector2, Square>();
     
 
 
@@ -88,24 +88,33 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        //Create an array of all the squares on the playing field.
         squares = FindObjectsOfType<Square>();
         Debug.Log("Found " + squares.Length + " squares.");
+        //Store References to the button images (to change when clicked)
         seedButtonImage = seedButton.GetComponent<Image>();
         stackButtonImage = stackButton.GetComponent<Image>();
         progressButtonImage = progressButton.GetComponent<Image>();
         endTurnButtonImage = endTurnButton.GetComponent<Image>();
+        //Update the current player and bubble display
         UpdatePlayerAndBubbleDisplay();
+        //Build a dictionary of all the squares 
         AddSquaresToDictionary();
     }
 
+    //This method will add all of the squares to the dictionary 
+    //which are accessible by their positions relative to the bottom 
+    //left corner of the board.
     void AddSquaresToDictionary()
     {
         foreach (Square sq in squares)
         {
-            squareDictioanry.Add(sq.Location, sq.gameObject);
+            squareDictionary.Add(sq.Location, sq);
         }
     }
 
+
+    //This method will return the current player's color.
     public Color ReturnCurrentPlayerColor()
     {
         if (CurrentPlayerTurn == 1)
@@ -114,6 +123,7 @@ public class GameController : MonoBehaviour
             return player2Color;
     }
 
+    //This happens when you click the SEED button.
     public void SeedButtonClicked()
     {
         currentAction = SelectedAction.seed;
@@ -122,6 +132,7 @@ public class GameController : MonoBehaviour
         seedButtonImage.sprite = seedSpriteSelected;
     }
 
+    //This happens when you click the STACK button.
     public void StackButtonClicked()
     {
         currentAction = SelectedAction.stack;
@@ -129,7 +140,8 @@ public class GameController : MonoBehaviour
         UnSelectAllSquares();
         stackButtonImage.sprite = stackSpriteSelected;
     }
-
+    
+    //This happens when you click the PROGRESS button.
     public void ProgressButtonClicked()
     {
         currentAction = SelectedAction.hold;
@@ -138,6 +150,7 @@ public class GameController : MonoBehaviour
         progressButtonImage.sprite = progressSpriteSelected;
     }
 
+    //This happens when you click the END TURN button.
     public void EndTurnButtonClicked()
     {
         currentAction = SelectedAction.hold;
@@ -146,6 +159,8 @@ public class GameController : MonoBehaviour
         endTurnButtonImage.sprite = endTurnSpriteSelected;
     }
 
+
+    //This method will clear all selections from the buttons.
     void UnSelectAllButtons()
     {
         seedButtonImage.sprite = seedSpriteUnSelected;
@@ -154,12 +169,15 @@ public class GameController : MonoBehaviour
         endTurnButtonImage.sprite = endTurnSpriteUnSelected;
     }
 
+    //This function updates the current player and remaining bubbles 
+    //displays in the top right corner of the screen.
     void UpdatePlayerAndBubbleDisplay()
     {
         bubblesRemainingText.text = bubblesRemaining.ToString();
         currentPlayerText.text = CurrentPlayerTurn.ToString();
     }
 
+    //This method will deselect all squares on the board.
     void UnSelectAllSquares()
     {
         foreach(Square sq in squares)
@@ -170,46 +188,39 @@ public class GameController : MonoBehaviour
 
     void SelectSquaresEligibleToSeed()
     {
-        // (3,3)
         foreach(Square sq in squares)
         {
             //Find the squares that are controlled by the current player
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayerTurn)
             {
                 //Then find the adjacent squares that are not controlled
-                //FindAdjacentUncontrolledSquares(sq);
+                FindAdjacentUncontrolledSquaresAndSelectThem(sq);
             }
         }
     }
 
-    //This Method will return a list of adjacent squares which can be highlighted for the seeding.
-    List<Square> FindAdjacentUncontrolledSquares(Square sq)
+    //This method will select all squares that are uncontrolled 
+    //and adjacent to the square passed as a parameter.
+    void FindAdjacentUncontrolledSquaresAndSelectThem(Square sq)
     {
-        //locate all adjacent squares and put them in a list to return.
-
-        List<Square> squaresToHighlight = new List<Square>();
-
+        //locate all adjacent squares
         for (int x = sq.Location.x-1; x <= sq.Location.x+1; x++)
         {
             for (int y = sq.Location.y - 1; y <= sq.Location.y+1; y++)
             {
                 //Create a key to use to look in dictionary
                 Vector2 key = new Vector2(x, y);
-                //Look in Dictionary with key, if the reference to a square returned is NOT null,then add it to the squaresToHighlight
-                if (squareDictioanry.TryGetValue(key, out value) != null)
+
+                //Look in Dictionary with key, if the reference to a square returned is NOT null, 
+                // and not controlled, then select it.
+                if (squareDictionary.TryGetValue(key, out value) != null)
                 {
-                    squaresToHighlight.Add(value);
+                    if(!value.IsControlled)
+                    {
+                        value.SelectThisSquare();
+                    }
                 }
             }
-        }
-
-        if (squaresToHighlight.Count > 0)
-        {
-            return squaresToHighlight;
-        }
-        else
-        {
-            return null;
         }
     }
 
