@@ -59,6 +59,7 @@ public class GameController : MonoBehaviour
     Image stackButtonImage;
     Image progressButtonImage;
     Image endTurnButtonImage;
+    Dictionary<Vector2, GameObject> squareDictioanry = new Dictionary<Vector2, GameObject>();
     
 
 
@@ -94,6 +95,15 @@ public class GameController : MonoBehaviour
         progressButtonImage = progressButton.GetComponent<Image>();
         endTurnButtonImage = endTurnButton.GetComponent<Image>();
         UpdatePlayerAndBubbleDisplay();
+        AddSquaresToDictionary();
+    }
+
+    void AddSquaresToDictionary()
+    {
+        foreach (Square sq in squares)
+        {
+            squareDictioanry.Add(sq.Location, sq.gameObject);
+        }
     }
 
     public Color ReturnCurrentPlayerColor()
@@ -155,6 +165,19 @@ public class GameController : MonoBehaviour
         foreach(Square sq in squares)
         {
             sq.UnSelectThisSquare();
+        }
+    }
+
+    void SelectSquaresEligibleToSeed()
+    {
+        // (3,3)
+        foreach(Square sq in squares)
+        {
+            //Find the squares that are controlled by the current player
+            if (sq.IsControlled && sq.PlayerControl == CurrentPlayerTurn)
+            {
+                //Then find the adjacent squares that are not controlled
+            }
         }
     }
 

@@ -35,6 +35,11 @@ public class Square : MonoBehaviour
         get { return location; }
     }
 
+    public int PlayerControl
+    {
+        get { return playerControl; }
+    }
+
     #endregion
 
     // Start is called before the first frame update
