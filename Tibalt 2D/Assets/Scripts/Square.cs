@@ -11,6 +11,7 @@ public class Square : MonoBehaviour
     bool isSelected = false;
     int playerControl = 0;
     int bubblesStacked = 0;
+    Vector2 location;
     Image image;
     Text text;
     RectTransform rectTransform;
@@ -29,6 +30,11 @@ public class Square : MonoBehaviour
         get { return isControlled; }
     }
 
+    public Vector2 Location
+    {
+        get { return location; }
+    }
+
     #endregion
 
     // Start is called before the first frame update
@@ -38,6 +44,7 @@ public class Square : MonoBehaviour
         gameController = FindObjectOfType<GameController>();
         rectTransform = GetComponent<RectTransform>();
         text = gameObject.GetComponentInChildren<Text>();
+        location = new Vector2((rectTransform.anchoredPosition.x + 400) / 100, (rectTransform.anchoredPosition.y + 400) / 100);
     }
 
    
@@ -65,6 +72,12 @@ public class Square : MonoBehaviour
     {
         isSelected = true;
         image.color = gameController.SelectedColor;
+    }
+
+    public void UnSelectThisSquare()
+    {
+        isSelected = false;
+        image.color = Color.white;
     }
 
     void StackThisSquare()

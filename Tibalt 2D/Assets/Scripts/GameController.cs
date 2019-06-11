@@ -18,18 +18,47 @@ public class GameController : MonoBehaviour
     [SerializeField]
     Text bubblesRemainingText;
     [SerializeField]
+    Text currentPlayerText;
+    [SerializeField]
     GameObject seedButton;
+    [SerializeField]
+    GameObject stackButton;
+    [SerializeField]
+    GameObject progressButton;
+    [SerializeField]
+    GameObject endTurnButton;
+    [SerializeField]
+    Sprite seedSpriteSelected;
+    [SerializeField]
+    Sprite seedSpriteUnSelected;
+    [SerializeField]
+    Sprite stackSpriteSelected;
+    [SerializeField]
+    Sprite stackSpriteUnSelected;
+    [SerializeField]
+    Sprite progressSpriteSelected;
+    [SerializeField]
+    Sprite progressSpriteUnSelected;
+    [SerializeField]
+    Sprite endTurnSpriteSelected;
+    [SerializeField]
+    Sprite endTurnSpriteUnSelected;
 
 
 
     //NOT visible in inspector
     int numberOfPlayers = 2;
     int playerTurn = 1;
+    int bubblesRemaining = 0;
     public Square[] squares;
     SelectedAction currentAction = SelectedAction.hold;
     Color selectedColor = Color.yellow;
     Color player1Color = Color.green;
     Color player2Color = Color.red;
+    Image seedButtonImage;
+    Image stackButtonImage;
+    Image progressButtonImage;
+    Image endTurnButtonImage;
     
 
 
@@ -51,6 +80,22 @@ public class GameController : MonoBehaviour
     {
         get { return selectedColor; }
     }
+
+    #endregion
+
+    #region METHODS
+
+    void Start()
+    {
+        squares = FindObjectsOfType<Square>();
+        Debug.Log("Found " + squares.Length + " squares.");
+        seedButtonImage = seedButton.GetComponent<Image>();
+        stackButtonImage = stackButton.GetComponent<Image>();
+        progressButtonImage = progressButton.GetComponent<Image>();
+        endTurnButtonImage = endTurnButton.GetComponent<Image>();
+        UpdatePlayerAndBubbleDisplay();
+    }
+
     public Color ReturnCurrentPlayerColor()
     {
         if (CurrentPlayerTurn == 1)
@@ -59,29 +104,59 @@ public class GameController : MonoBehaviour
             return player2Color;
     }
 
-
-
-    #endregion
-
-    #region METHODS
-    // Start is called before the first frame update
-    void Start()
-    {
-        squares = FindObjectsOfType<Square>();
-        Debug.Log("Found " + squares.Length + " squares.");
-        Debug.Log(SelectedAction.seed);
-    }
-
     public void SeedButtonClicked()
     {
         currentAction = SelectedAction.seed;
+        UnSelectAllButtons();
+        UnSelectAllSquares();
+        seedButtonImage.sprite = seedSpriteSelected;
     }
 
     public void StackButtonClicked()
     {
         currentAction = SelectedAction.stack;
+        UnSelectAllButtons();
+        UnSelectAllSquares();
+        stackButtonImage.sprite = stackSpriteSelected;
     }
 
+    public void ProgressButtonClicked()
+    {
+        currentAction = SelectedAction.hold;
+        UnSelectAllButtons();
+        UnSelectAllSquares();
+        progressButtonImage.sprite = progressSpriteSelected;
+    }
+
+    public void EndTurnButtonClicked()
+    {
+        currentAction = SelectedAction.hold;
+        UnSelectAllButtons();
+        UnSelectAllSquares();
+        endTurnButtonImage.sprite = endTurnSpriteSelected;
+    }
+
+    void UnSelectAllButtons()
+    {
+        seedButtonImage.sprite = seedSpriteUnSelected;
+        stackButtonImage.sprite = stackSpriteUnSelected;
+        progressButtonImage.sprite = progressSpriteUnSelected;
+        endTurnButtonImage.sprite = endTurnSpriteUnSelected;
+    }
+
+    void UpdatePlayerAndBubbleDisplay()
+    {
+        bubblesRemainingText.text = bubblesRemaining.ToString();
+        currentPlayerText.text = CurrentPlayerTurn.ToString();
+    }
+
+    void UnSelectAllSquares()
+    {
+        foreach(Square sq in squares)
+        {
+            sq.UnSelectThisSquare();
+        }
+    }
 
     #endregion
 }
