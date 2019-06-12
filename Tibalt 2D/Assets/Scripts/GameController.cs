@@ -7,7 +7,8 @@ public enum SelectedAction
 {
     seed,
     stack,
-    hold
+    hold,
+    firstTurn
 }
 
 public class GameController : MonoBehaviour
@@ -44,14 +45,12 @@ public class GameController : MonoBehaviour
     [SerializeField]
     Sprite endTurnSpriteUnSelected;
 
-
-
     //NOT visible in inspector
     int numberOfPlayers = 2;
     int playerTurn = 1;
     int bubblesRemaining = 0;
     public Square[] squares;
-    SelectedAction currentAction = SelectedAction.hold;
+    SelectedAction currentAction = SelectedAction.firstTurn;
     Color selectedColor = Color.yellow;
     Color player1Color = Color.green;
     Color player2Color = Color.red;
@@ -61,8 +60,6 @@ public class GameController : MonoBehaviour
     Image endTurnButtonImage;
     Dictionary<Vector2, Square> squareDictionary = new Dictionary<Vector2, Square>();
     
-
-
     #endregion
 
     #region PROPERTIES
@@ -75,6 +72,11 @@ public class GameController : MonoBehaviour
     public int CurrentPlayerTurn
     {
         get { return playerTurn; }
+    }
+
+    public int NumberOfPlayers
+    {
+        get { return numberOfPlayers; }
     }
 
     public Color SelectedColor

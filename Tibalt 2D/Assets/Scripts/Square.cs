@@ -56,7 +56,21 @@ public class Square : MonoBehaviour
    
     public void HandleClick()
     {
-        if(!isSelected && gameController.CurrentAction != SelectedAction.hold)
+        if(gameController.CurrentAction == SelectedAction.firstTurn)
+        {
+            if(!isSelected)
+            {
+                SelectThisSquare();
+                return;
+            }
+            else
+            {
+                SeedThisSquare();
+                return;
+            }
+        }
+
+        if (!isSelected && gameController.CurrentAction != SelectedAction.hold)
         {
             //if(gameController.CurrentAction == SelectedAction.seed)
             SelectThisSquare();
