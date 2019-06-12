@@ -56,7 +56,8 @@ public class Square : MonoBehaviour
    
     public void HandleClick()
     {
-        if(gameController.CurrentAction == SelectedAction.firstTurn)
+        //This handles actions on the first turn.  Each player can select one square to seed.
+        if (gameController.CurrentAction == SelectedAction.firstTurn)
         {
             if(!isSelected)
             {
@@ -66,6 +67,18 @@ public class Square : MonoBehaviour
             else
             {
                 SeedThisSquare();
+                if(gameController.CurrentPlayerTurn >= gameController.NumberOfPlayers)
+                {
+                    //End First Turn
+                    gameController.EndTurnButtonClicked();
+                    //First Turn image deactivated.
+                    gameController.DeactivateFirstTurnImage();
+                }
+                else
+                {
+                    //Change to next player.
+                    gameController.SwitchPlayerTurn();
+                }
                 return;
             }
         }
@@ -91,6 +104,11 @@ public class Square : MonoBehaviour
 
     public void SelectThisSquare()
     {
+        //If the Current Action is not SEED, then only one square should be selected at a time.
+        if (gameController.CurrentAction != SelectedAction.seed)
+        {
+            gameController.UnSelectAllSquares();
+        }
         isSelected = true;
         //
         //TO DO:  Replace with a outline indicator rather than color, since

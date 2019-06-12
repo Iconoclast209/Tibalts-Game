@@ -44,6 +44,8 @@ public class GameController : MonoBehaviour
     Sprite endTurnSpriteSelected;
     [SerializeField]
     Sprite endTurnSpriteUnSelected;
+    [SerializeField]
+    GameObject firstTurn;
 
     //NOT visible in inspector
     int numberOfPlayers = 2;
@@ -160,6 +162,7 @@ public class GameController : MonoBehaviour
         UnSelectAllButtons();
         UnSelectAllSquares();
         endTurnButtonImage.sprite = endTurnSpriteSelected;
+        SwitchPlayerTurn();
     }
 
 
@@ -181,7 +184,7 @@ public class GameController : MonoBehaviour
     }
 
     //This method will deselect all squares on the board.
-    void UnSelectAllSquares()
+    public void UnSelectAllSquares()
     {
         foreach(Square sq in squares)
         {
@@ -227,6 +230,25 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void SwitchPlayerTurn()
+    {
+        if(CurrentPlayerTurn == NumberOfPlayers)
+        {
+            playerTurn = 1;
+        }
+        else
+        {
+            playerTurn++;
+        }
+        UpdatePlayerAndBubbleDisplay();
+        
+        //StartNewTurn();
+    }
 
+
+    public void DeactivateFirstTurnImage()
+    {
+        firstTurn.SetActive(false);
+    }
     #endregion
 }

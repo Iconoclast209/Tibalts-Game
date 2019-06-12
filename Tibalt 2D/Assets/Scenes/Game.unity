@@ -8649,6 +8649,7 @@ MonoBehaviour:
     type: 3}
   endTurnSpriteUnSelected: {fileID: 21300000, guid: 43c4b642d08770844948f45bdf109aa7,
     type: 3}
+  firstTurn: {fileID: 1030293}
   squares: []
 --- !u!4 &1511496962
 Transform:
