@@ -130,6 +130,7 @@ public class GameController : MonoBehaviour
         UnSelectAllButtons();
         UnSelectAllSquares();
         seedButtonImage.sprite = seedSpriteSelected;
+        SelectSquaresEligibleToSeed();
     }
 
     //This happens when you click the STACK button.
@@ -204,20 +205,20 @@ public class GameController : MonoBehaviour
     void FindAdjacentUncontrolledSquaresAndSelectThem(Square sq)
     {
         //locate all adjacent squares
-        for (int x = sq.Location.x-1; x <= sq.Location.x+1; x++)
+        for (int x = (int)sq.Location.x-1; x <= (int)sq.Location.x+1; x++)
         {
-            for (int y = sq.Location.y - 1; y <= sq.Location.y+1; y++)
+            for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y+1; y++)
             {
                 //Create a key to use to look in dictionary
                 Vector2 key = new Vector2(x, y);
 
                 //Look in Dictionary with key, if the reference to a square returned is NOT null, 
                 // and not controlled, then select it.
-                if (squareDictionary.TryGetValue(key, out value) != null)
+                if (squareDictionary.TryGetValue(key, out Square currentSquare) != null)
                 {
-                    if(!value.IsControlled)
+                    if(!currentSquare.IsControlled)
                     {
-                        value.SelectThisSquare();
+                        currentSquare.SelectThisSquare();
                     }
                 }
             }

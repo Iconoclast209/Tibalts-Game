@@ -49,16 +49,16 @@ public class Square : MonoBehaviour
         gameController = FindObjectOfType<GameController>();
         rectTransform = GetComponent<RectTransform>();
         text = gameObject.GetComponentInChildren<Text>();
-        //TO DO:  Verify the line below.
-        text.SetActive(false);
+        text.gameObject.SetActive(false);
         location = new Vector2((rectTransform.anchoredPosition.x + 400) / 100, (rectTransform.anchoredPosition.y + 400) / 100);
     }
 
    
     public void HandleClick()
     {
-        if(!isSelected)
+        if(!isSelected && gameController.CurrentAction != SelectedAction.hold)
         {
+            //if(gameController.CurrentAction == SelectedAction.seed)
             SelectThisSquare();
         }
         else
@@ -75,7 +75,7 @@ public class Square : MonoBehaviour
         
     }
 
-    void SelectThisSquare()
+    public void SelectThisSquare()
     {
         isSelected = true;
         //
@@ -95,6 +95,10 @@ public class Square : MonoBehaviour
 
     void StackThisSquare()
     {
+        if(text.IsActive() == false)
+        {
+            text.gameObject.SetActive(true);
+        }
         bubblesStacked++;
         text.text = bubblesStacked.ToString();
     }
@@ -107,6 +111,10 @@ public class Square : MonoBehaviour
         playerControl = gameController.CurrentPlayerTurn;
         //Add one bubble to the squre's stack
         bubblesStacked++;
+        if (text.IsActive() == false)
+        {
+            text.gameObject.SetActive(true);
+        }
         text.text = bubblesStacked.ToString();
         //TO DO: Replace with sprite for player color.
         // Set the square's color to the player color.
