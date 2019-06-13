@@ -8,7 +8,8 @@ public enum SelectedAction
     seed,
     stack,
     hold,
-    firstTurn
+    firstTurn,
+    buttonsDisabled
 }
 
 public class GameController : MonoBehaviour
@@ -49,13 +50,13 @@ public class GameController : MonoBehaviour
 
     //NOT visible in inspector
     int numberOfPlayers = 2;
-    int playerTurn = 1;
+    int currentPlayer = 1;
     int bubblesRemaining = 0;
     public Square[] squares;
     SelectedAction currentAction = SelectedAction.firstTurn;
+    // 0 = selected color, all other ints relate to player number.
+    Dictionary<int, Color> colorDictionary = new Dictionary<int, Color>(); 
     Color selectedColor = Color.yellow;
-    Color player1Color = Color.green;
-    Color player2Color = Color.red;
     Image seedButtonImage;
     Image stackButtonImage;
     Image progressButtonImage;
@@ -71,9 +72,9 @@ public class GameController : MonoBehaviour
         get { return currentAction; }
     }
 
-    public int CurrentPlayerTurn
+    public int CurrentPlayer
     {
-        get { return playerTurn; }
+        get { return currentPlayer; }
     }
 
     public int NumberOfPlayers
@@ -104,6 +105,8 @@ public class GameController : MonoBehaviour
         UpdatePlayerAndBubbleDisplay();
         //Build a dictionary of all the squares 
         AddSquaresToDictionary();
+        //Generate the color entries in the colorDictionary
+        SetupColorDictionary();
     }
 
     //This method will add all of the squares to the dictionary 
@@ -121,38 +124,45 @@ public class GameController : MonoBehaviour
     //This method will return the current player's color.
     public Color ReturnCurrentPlayerColor()
     {
-        if (CurrentPlayerTurn == 1)
-            return player1Color;
-        else
-            return player2Color;
+        colorDictionary.TryGetValue(CurrentPlayer,out Color value);
+        return value;
     }
 
     //This happens when you click the SEED button.
     public void SeedButtonClicked()
     {
-        currentAction = SelectedAction.seed;
-        UnSelectAllButtons();
-        UnSelectAllSquares();
-        seedButtonImage.sprite = seedSpriteSelected;
-        SelectSquaresEligibleToSeed();
+        if(currentAction != SelectedAction.firstTurn)
+        {
+            currentAction = SelectedAction.seed;
+            UnSelectAllButtons();
+            UnSelectAllSquares();
+            seedButtonImage.sprite = seedSpriteSelected;
+            SelectSquaresEligibleToSeed();
+        }
     }
 
     //This happens when you click the STACK button.
     public void StackButtonClicked()
     {
-        currentAction = SelectedAction.stack;
-        UnSelectAllButtons();
-        UnSelectAllSquares();
-        stackButtonImage.sprite = stackSpriteSelected;
+        if (currentAction != SelectedAction.firstTurn)
+        {
+            currentAction = SelectedAction.stack;
+            UnSelectAllButtons();
+            UnSelectAllSquares();
+            stackButtonImage.sprite = stackSpriteSelected;
+        }
     }
     
     //This happens when you click the PROGRESS button.
     public void ProgressButtonClicked()
     {
-        currentAction = SelectedAction.hold;
-        UnSelectAllButtons();
-        UnSelectAllSquares();
-        progressButtonImage.sprite = progressSpriteSelected;
+        if (currentAction != SelectedAction.firstTurn)
+        {
+            currentAction = SelectedAction.hold;
+            UnSelectAllButtons();
+            UnSelectAllSquares();
+            progressButtonImage.sprite = progressSpriteSelected;
+        }
     }
 
     //This happens when you click the END TURN button.
@@ -162,7 +172,8 @@ public class GameController : MonoBehaviour
         UnSelectAllButtons();
         UnSelectAllSquares();
         endTurnButtonImage.sprite = endTurnSpriteSelected;
-        SwitchPlayerTurn();
+        GoToNextPlayerTurn();
+        Invoke("ResetEndTurnButton", 1.0f);
     }
 
 
@@ -180,7 +191,7 @@ public class GameController : MonoBehaviour
     void UpdatePlayerAndBubbleDisplay()
     {
         bubblesRemainingText.text = bubblesRemaining.ToString();
-        currentPlayerText.text = CurrentPlayerTurn.ToString();
+        currentPlayerText.text = CurrentPlayer.ToString();
     }
 
     //This method will deselect all squares on the board.
@@ -188,7 +199,7 @@ public class GameController : MonoBehaviour
     {
         foreach(Square sq in squares)
         {
-            sq.UnSelectThisSquare();
+            sq.DeSelectThisSquare();
         }
     }
 
@@ -197,7 +208,7 @@ public class GameController : MonoBehaviour
         foreach(Square sq in squares)
         {
             //Find the squares that are controlled by the current player
-            if (sq.IsControlled && sq.PlayerControl == CurrentPlayerTurn)
+            if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
             {
                 //Then find the adjacent squares that are not controlled
                 FindAdjacentUncontrolledSquaresAndSelectThem(sq);
@@ -230,25 +241,35 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void SwitchPlayerTurn()
+    public void GoToNextPlayerTurn()
     {
-        if(CurrentPlayerTurn == NumberOfPlayers)
+        if(CurrentPlayer == NumberOfPlayers)
         {
-            playerTurn = 1;
+            currentPlayer = 1;
         }
         else
         {
-            playerTurn++;
+            currentPlayer++;
         }
         UpdatePlayerAndBubbleDisplay();
-        
         //StartNewTurn();
     }
 
+    private void SetupColorDictionary()
+    {
+        colorDictionary.Add(1, Color.green);
+        colorDictionary.Add(2, Color.red);
+    }
 
-    public void DeactivateFirstTurnImage()
+    public void EndFirstTurn()
     {
         firstTurn.SetActive(false);
     }
+
+    private void ResetEndTurnButton()
+    {
+        //Deselect the End Turn Button
+    }
+
     #endregion
 }

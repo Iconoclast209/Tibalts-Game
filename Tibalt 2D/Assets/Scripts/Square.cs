@@ -45,6 +45,7 @@ public class Square : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Set References and populate location field.
         image = GetComponent<Image>();
         gameController = FindObjectOfType<GameController>();
         rectTransform = GetComponent<RectTransform>();
@@ -59,28 +60,8 @@ public class Square : MonoBehaviour
         //This handles actions on the first turn.  Each player can select one square to seed.
         if (gameController.CurrentAction == SelectedAction.firstTurn)
         {
-            if(!isSelected)
-            {
-                SelectThisSquare();
-                return;
-            }
-            else
-            {
-                SeedThisSquare();
-                if(gameController.CurrentPlayerTurn >= gameController.NumberOfPlayers)
-                {
-                    //End First Turn
-                    gameController.EndTurnButtonClicked();
-                    //First Turn image deactivated.
-                    gameController.DeactivateFirstTurnImage();
-                }
-                else
-                {
-                    //Change to next player.
-                    gameController.SwitchPlayerTurn();
-                }
-                return;
-            }
+            FirstTurn();
+            return;
         }
 
         if (!isSelected && gameController.CurrentAction != SelectedAction.hold)
@@ -102,6 +83,29 @@ public class Square : MonoBehaviour
         
     }
 
+    void FirstTurn()
+    {
+        if (!isSelected)
+        {
+            SelectThisSquare();
+        }
+        else
+        {
+            SeedThisSquare();
+            if (gameController.CurrentPlayerTurn >= gameController.NumberOfPlayers)
+            {
+                //First Turn image deactivated.
+                gameController.EndFirstTurn();
+            }
+            else
+            {
+                //Change to next player.
+                gameController.GoToNextPlayerTurn();
+            }
+            return;
+        }
+    }
+
     public void SelectThisSquare()
     {
         //If the Current Action is not SEED, then only one square should be selected at a time.
@@ -116,11 +120,11 @@ public class Square : MonoBehaviour
         image.color = gameController.SelectedColor;
     }
 
-    public void UnSelectThisSquare()
+    public void DeSelectThisSquare()
     {
         isSelected = false;
         //
-        //TO DO:  Revert to previous sprite.
+        //TO DO:  Revert to previous/base sprite.
         //        
         image.color = Color.white;
     }
