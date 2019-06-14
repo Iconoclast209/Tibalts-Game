@@ -55,18 +55,18 @@ public class GameController : MonoBehaviour
     public Square[] squares;
     SelectedAction currentAction = SelectedAction.firstTurn;
     // 0 = selected color, all other ints relate to player number.
-    Dictionary<int, Color> colorDictionary = new Dictionary<int, Color>(); 
+    Dictionary<int, Color> colorDictionary = new Dictionary<int, Color>();
     Color selectedColor = Color.yellow;
     Image seedButtonImage;
     Image stackButtonImage;
     Image progressButtonImage;
     Image endTurnButtonImage;
     Dictionary<Vector2, Square> squareDictionary = new Dictionary<Vector2, Square>();
-    
+
     #endregion
 
     #region PROPERTIES
-    
+
     public SelectedAction CurrentAction
     {
         get { return currentAction; }
@@ -131,14 +131,14 @@ public class GameController : MonoBehaviour
     //This method will return the current player's color.
     public Color ReturnPlayerColor(int playerNum)
     {
-        colorDictionary.TryGetValue(playerNum,out Color value);
+        colorDictionary.TryGetValue(playerNum, out Color value);
         return value;
     }
 
     //This happens when you click the SEED button.
     public void SeedButtonClicked()
     {
-        if(currentAction != SelectedAction.firstTurn)
+        if (currentAction != SelectedAction.firstTurn)
         {
             currentAction = SelectedAction.seed;
             UnSelectAllButtons();
@@ -159,7 +159,7 @@ public class GameController : MonoBehaviour
             stackButtonImage.sprite = stackSpriteSelected;
         }
     }
-    
+
     //This happens when you click the PROGRESS button.
     public void ProgressButtonClicked()
     {
@@ -205,7 +205,7 @@ public class GameController : MonoBehaviour
     //This method will deselect all squares on the board.
     public void UnSelectAllSquares()
     {
-        foreach(Square sq in squares)
+        foreach (Square sq in squares)
         {
             sq.DeSelectThisSquare();
         }
@@ -213,7 +213,7 @@ public class GameController : MonoBehaviour
 
     void SelectSquaresEligibleToSeed()
     {
-        foreach(Square sq in squares)
+        foreach (Square sq in squares)
         {
             //Find the squares that are controlled by the current player
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
@@ -229,9 +229,9 @@ public class GameController : MonoBehaviour
     void FindAdjacentUncontrolledSquaresAndSelectThem(Square sq)
     {
         //locate all adjacent squares
-        for (int x = (int)sq.Location.x-1; x <= (int)sq.Location.x+1; x++)
+        for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
         {
-            for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y+1; y++)
+            for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y + 1; y++)
             {
                 //Create a key to use to look in dictionary
                 Vector2 key = new Vector2(x, y);
@@ -249,7 +249,7 @@ public class GameController : MonoBehaviour
 
     public void GoToNextPlayerTurn()
     {
-        if(CurrentPlayer == NumberOfPlayers  || CurrentPlayer <= 0)
+        if (CurrentPlayer == NumberOfPlayers || CurrentPlayer <= 0)
         {
             currentPlayer = 1;
         }
@@ -281,5 +281,44 @@ public class GameController : MonoBehaviour
         endTurnButtonImage.sprite = endTurnSpriteUnSelected;
     }
 
+    private void GenerateBubbles()
+    {
+        List<Square> squaresToGenerateBubbles = new List<Square>();
+
+        foreach (Square sq in squares)
+        {
+            //Find the squares that are controlled by the current player
+            if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
+            {
+                //Then find the adjacent squares that are not controlled.
+                for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
+                {
+                    for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y + 1; y++)
+                    {
+                        //Create a key to use to look in dictionary
+                        Vector2 key = new Vector2(x, y);
+                        if (!sq.IsControlled && !sq.IsDepleted)
+                        {
+                            squareDictionary.TryGetValue(key, out Square currentSquare);
+                            if (currentSquare != null)
+                            {
+                                if (!squaresToGenerateBubbles.Contains(currentSquare))
+                                {
+                                    squaresToGenerateBubbles.Add(currentSquare);
+                                    Debug.Log("currentSquare added to squaresToGenerateBubble at " + key.ToString());
+                                }
+                                else
+                                {
+                                    Debug.Log("currentSquare is already in the list squaresToGenerateBubbles.");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //Set bubblesRemaining to the number of squares added to the list.
+        bubblesRemaining = squaresToGenerateBubbles.Count;
+    }
     #endregion
 }
