@@ -87,6 +87,11 @@ public class GameController : MonoBehaviour
         get { return selectedColor; }
     }
 
+    public int BubblesRemaining
+    {
+        get { return bubblesRemaining; }
+    }
+
     #endregion
 
     #region METHODS
@@ -101,12 +106,14 @@ public class GameController : MonoBehaviour
         stackButtonImage = stackButton.GetComponent<Image>();
         progressButtonImage = progressButton.GetComponent<Image>();
         endTurnButtonImage = endTurnButton.GetComponent<Image>();
-        //Update the current player and bubble display
-        UpdatePlayerAndBubbleDisplay();
         //Build a dictionary of all the squares 
         AddSquaresToDictionary();
         //Generate the color entries in the colorDictionary
         SetupColorDictionary();
+
+        currentPlayer = 1;
+        //Update the current player and bubble display
+        UpdatePlayerAndBubbleDisplay();
     }
 
     //This method will add all of the squares to the dictionary 
@@ -122,9 +129,9 @@ public class GameController : MonoBehaviour
 
 
     //This method will return the current player's color.
-    public Color ReturnCurrentPlayerColor()
+    public Color ReturnPlayerColor(int playerNum)
     {
-        colorDictionary.TryGetValue(CurrentPlayer,out Color value);
+        colorDictionary.TryGetValue(playerNum,out Color value);
         return value;
     }
 
@@ -192,6 +199,7 @@ public class GameController : MonoBehaviour
     {
         bubblesRemainingText.text = bubblesRemaining.ToString();
         currentPlayerText.text = CurrentPlayer.ToString();
+        currentPlayerText.gameObject.GetComponentInParent<Image>().color = ReturnPlayerColor(CurrentPlayer);
     }
 
     //This method will deselect all squares on the board.
@@ -230,12 +238,10 @@ public class GameController : MonoBehaviour
 
                 //Look in Dictionary with key, if the reference to a square returned is NOT null, 
                 // and not controlled, then select it.
-                if (squareDictionary.TryGetValue(key, out Square currentSquare) != null)
+                squareDictionary.TryGetValue(key, out Square currentSquare);
+                if (currentSquare != null && !currentSquare.IsControlled)
                 {
-                    if(!currentSquare.IsControlled)
-                    {
-                        currentSquare.SelectThisSquare();
-                    }
+                    currentSquare.SelectThisSquare();
                 }
             }
         }
@@ -243,7 +249,7 @@ public class GameController : MonoBehaviour
 
     public void GoToNextPlayerTurn()
     {
-        if(CurrentPlayer == NumberOfPlayers)
+        if(CurrentPlayer == NumberOfPlayers  || CurrentPlayer <= 0)
         {
             currentPlayer = 1;
         }
@@ -264,11 +270,15 @@ public class GameController : MonoBehaviour
     public void EndFirstTurn()
     {
         firstTurn.SetActive(false);
+        currentAction = SelectedAction.hold;
+        currentPlayer = 1;
+        UpdatePlayerAndBubbleDisplay();
     }
 
     private void ResetEndTurnButton()
     {
         //Deselect the End Turn Button
+        endTurnButtonImage.sprite = endTurnSpriteUnSelected;
     }
 
     #endregion

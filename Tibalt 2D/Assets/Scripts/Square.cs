@@ -75,7 +75,7 @@ public class Square : MonoBehaviour
             {
                 SeedThisSquare();
             }
-            else if(gameController.CurrentAction == SelectedAction.stack && playerControl == gameController.CurrentPlayerTurn)
+            else if(gameController.CurrentAction == SelectedAction.stack && playerControl == gameController.CurrentPlayer)
             {
                 StackThisSquare();
             }
@@ -92,7 +92,7 @@ public class Square : MonoBehaviour
         else
         {
             SeedThisSquare();
-            if (gameController.CurrentPlayerTurn >= gameController.NumberOfPlayers)
+            if (gameController.CurrentPlayer >= gameController.NumberOfPlayers)
             {
                 //First Turn image deactivated.
                 gameController.EndFirstTurn();
@@ -126,7 +126,15 @@ public class Square : MonoBehaviour
         //
         //TO DO:  Revert to previous/base sprite.
         //        
-        image.color = Color.white;
+        if(!isControlled)
+        {
+            image.color = Color.white;
+        }
+        else
+        {
+            image.color = gameController.ReturnPlayerColor(playerControl);
+        }
+
     }
 
     void StackThisSquare()
@@ -144,17 +152,16 @@ public class Square : MonoBehaviour
     {
         isControlled = true;
         //Set controlled by current player
-        playerControl = gameController.CurrentPlayerTurn;
-        //Add one bubble to the squre's stack
+        playerControl = gameController.CurrentPlayer;
+        //Add one bubble to the square's stack
         bubblesStacked++;
         if (text.IsActive() == false)
         {
             text.gameObject.SetActive(true);
         }
         text.text = bubblesStacked.ToString();
-        //TO DO: Replace with sprite for player color.
-        // Set the square's color to the player color.
-        image.color = gameController.ReturnCurrentPlayerColor();
 
+        // Set the square's color to the player color.
+        image.color = gameController.ReturnPlayerColor(playerControl);
     }
 }
