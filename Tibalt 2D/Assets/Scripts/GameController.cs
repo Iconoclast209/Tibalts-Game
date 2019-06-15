@@ -257,8 +257,7 @@ public class GameController : MonoBehaviour
         {
             currentPlayer++;
         }
-        UpdatePlayerAndBubbleDisplay();
-        //StartNewTurn();
+        StartNewTurn();
     }
 
     private void SetupColorDictionary()
@@ -272,6 +271,7 @@ public class GameController : MonoBehaviour
         firstTurn.SetActive(false);
         currentAction = SelectedAction.hold;
         currentPlayer = 1;
+        GenerateBubbles();
         UpdatePlayerAndBubbleDisplay();
     }
 
@@ -283,13 +283,17 @@ public class GameController : MonoBehaviour
 
     private void GenerateBubbles()
     {
+        Debug.Log("Generate Bubbles Called.");
         List<Square> squaresToGenerateBubbles = new List<Square>();
-
+        int foreachCount = 0;
         foreach (Square sq in squares)
         {
+            foreachCount++;
             //Find the squares that are controlled by the current player
+            Debug.Log("foreachCount " + foreachCount.ToString());
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
             {
+                Debug.Log("Found a controlled square!!!!!!!!!!!");
                 //Then find the adjacent squares that are not controlled.
                 for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
                 {
@@ -297,12 +301,16 @@ public class GameController : MonoBehaviour
                     {
                         //Create a key to use to look in dictionary
                         Vector2 key = new Vector2(x, y);
-                        if (!sq.IsControlled && !sq.IsDepleted)
+                        Debug.Log("Testing a Square to generate bubbles.");
+                        
+                        squareDictionary.TryGetValue(key, out Square currentSquare);
+
+                        if (currentSquare != null)
                         {
-                            squareDictionary.TryGetValue(key, out Square currentSquare);
-                            if (currentSquare != null)
+                            Debug.Log("Found a square in dictionary.");
+                            if (!currentSquare.IsControlled)
                             {
-                                if (!squaresToGenerateBubbles.Contains(currentSquare))
+                                if(!squaresToGenerateBubbles.Contains(currentSquare))
                                 {
                                     squaresToGenerateBubbles.Add(currentSquare);
                                     Debug.Log("currentSquare added to squaresToGenerateBubble at " + key.ToString());
@@ -312,13 +320,36 @@ public class GameController : MonoBehaviour
                                     Debug.Log("currentSquare is already in the list squaresToGenerateBubbles.");
                                 }
                             }
+                            else
+                            {
+                                Debug.Log("Square at " + key.ToString() + " is controlled by a player");
+                            }
                         }
                     }
                 }
             }
         }
         //Set bubblesRemaining to the number of squares added to the list.
-        bubblesRemaining = squaresToGenerateBubbles.Count;
+        bubblesRemaining = squaresToGenerateBubbles.Count / 2;
     }
+
+
+    private void StartNewTurn()
+    {
+        Debug.Log("Starting a new turn!");
+        bubblesRemaining = 0;
+        GenerateBubbles();
+        UpdatePlayerAndBubbleDisplay();
+    }
+
+    public void UseABubble()
+    {
+        if (bubblesRemaining > 0)
+        {
+            bubblesRemaining--;
+            UpdatePlayerAndBubbleDisplay();
+        }
+    }
+
     #endregion
 }

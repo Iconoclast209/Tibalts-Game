@@ -66,16 +66,26 @@ public class Square : MonoBehaviour
 
         if (!isSelected && gameController.CurrentAction != SelectedAction.hold)
         {
-            //if(gameController.CurrentAction == SelectedAction.seed)
-            SelectThisSquare();
+            if(gameController.CurrentAction == SelectedAction.stack && PlayerControl == gameController.CurrentPlayer)
+            {
+                SelectThisSquare();
+            }
+            else if(gameController.CurrentAction == SelectedAction.seed)
+            {
+                SelectThisSquare();
+            }
+            else
+            {
+                //Do Nothing
+            }
         }
         else
         {
-            if(gameController.CurrentAction == SelectedAction.seed && isControlled == false)
+            if(gameController.CurrentAction == SelectedAction.seed && isControlled == false && gameController.BubblesRemaining >0)
             {
                 SeedThisSquare();
             }
-            else if(gameController.CurrentAction == SelectedAction.stack && playerControl == gameController.CurrentPlayer)
+            else if(gameController.CurrentAction == SelectedAction.stack && playerControl == gameController.CurrentPlayer && gameController.BubblesRemaining > 0)
             {
                 StackThisSquare();
             }
@@ -145,6 +155,7 @@ public class Square : MonoBehaviour
         }
         bubblesStacked++;
         text.text = bubblesStacked.ToString();
+        gameController.UseABubble();
     }
 
     //This function will take ownership of a square and stack one bubble on it.
@@ -163,5 +174,6 @@ public class Square : MonoBehaviour
 
         // Set the square's color to the player color.
         image.color = gameController.ReturnPlayerColor(playerControl);
+        gameController.UseABubble();
     }
 }
