@@ -166,9 +166,13 @@ public class GameController : MonoBehaviour
         if (currentAction != SelectedAction.firstTurn)
         {
             currentAction = SelectedAction.hold;
+            
             UnSelectAllButtons();
             UnSelectAllSquares();
             progressButtonImage.sprite = progressSpriteSelected;
+            Progress();
+            Invoke("ResetProgressButton", 1.0f);
+
         }
     }
 
@@ -281,16 +285,17 @@ public class GameController : MonoBehaviour
         endTurnButtonImage.sprite = endTurnSpriteUnSelected;
     }
 
+    private void ResetProgressButton()
+    {
+        progressButtonImage.sprite = progressSpriteUnSelected;
+    }
+
     private void GenerateBubbles()
     {
-        Debug.Log("Generate Bubbles Called.");
         List<Square> squaresToGenerateBubbles = new List<Square>();
-        int foreachCount = 0;
         foreach (Square sq in squares)
         {
-            foreachCount++;
             //Find the squares that are controlled by the current player
-            Debug.Log("foreachCount " + foreachCount.ToString());
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
             {
                 Debug.Log("Found a controlled square!!!!!!!!!!!");
@@ -348,6 +353,34 @@ public class GameController : MonoBehaviour
         {
             bubblesRemaining--;
             UpdatePlayerAndBubbleDisplay();
+        }
+    }
+
+    private void Progress()
+    {
+        foreach (Square sq in squares)
+        {
+            //Find the squares that are controlled by the current player
+            if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
+            {
+                Debug.Log("Found a controlled square!");
+                if(sq.BubblesStacked % 2 == 0)
+                {
+                    //This is an even number, create a Unit of War
+                    Debug.Log("Creating Unit of War at " + sq.Location.ToString());
+                }
+                else if(sq.BubblesStacked % 3 ==0)
+                {
+                    //This is an odd number divisible by 3, create a Unit of Art
+                    Debug.Log("Creating Unit of Art at " + sq.Location.ToString());
+                }
+                else
+                {
+                    //The square will remain as-is.
+                }
+                
+                
+            }
         }
     }
 

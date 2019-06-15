@@ -40,6 +40,11 @@ public class Square : MonoBehaviour
         get { return playerControl; }
     }
 
+    public int BubblesStacked
+    {
+        get { return bubblesStacked; }
+    }
+
     #endregion
 
     // Start is called before the first frame update
