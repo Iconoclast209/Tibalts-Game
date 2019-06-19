@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
     int numberOfPlayers = 2;
     int currentPlayer = 1;
     int bubblesRemaining = 0;
-    public Square[] squares;
+    public Square[] allSquaresOnBoard;
     SelectedAction currentAction = SelectedAction.firstTurn;
     // 0 = selected color, all other ints relate to player number.
     Dictionary<int, Color> colorDictionary = new Dictionary<int, Color>();
@@ -99,8 +99,8 @@ public class GameController : MonoBehaviour
     void Start()
     {
         //Create an array of all the squares on the playing field.
-        squares = FindObjectsOfType<Square>();
-        Debug.Log("Found " + squares.Length + " squares.");
+        allSquaresOnBoard = FindObjectsOfType<Square>();
+        Debug.Log("Found " + allSquaresOnBoard.Length + " squares.");
         //Store References to the button images (to change when clicked)
         seedButtonImage = seedButton.GetComponent<Image>();
         stackButtonImage = stackButton.GetComponent<Image>();
@@ -121,7 +121,7 @@ public class GameController : MonoBehaviour
     //left corner of the board.
     void AddSquaresToDictionary()
     {
-        foreach (Square sq in squares)
+        foreach (Square sq in allSquaresOnBoard)
         {
             squareDictionary.Add(sq.Location, sq);
         }
@@ -209,50 +209,35 @@ public class GameController : MonoBehaviour
     //This method will deselect all squares on the board.
     public void UnSelectAllSquares()
     {
-        foreach (Square sq in squares)
+        foreach (Square sq in allSquaresOnBoard)
         {
             sq.DeSelectThisSquare();
         }
     }
-
+    
+    //
+    //This method will select all the squares that are eligible to be seeded.
+    //
     void SelectSquaresEligibleToSeed()
     {
-        foreach (Square sq in squares)
+        foreach (Square sq in allSquaresOnBoard)
         {
             //Find the squares that are controlled by the current player
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
             {
-                //Then find the adjacent squares that are not controlled
-                FindAdjacentUncontrolledSquaresAndSelectThem(sq);
-            }
-        }
-    }
-
-    //This method will select all squares that are uncontrolled 
-    //and adjacent to the square passed as a parameter.
-    void FindAdjacentUncontrolledSquaresAndSelectThem(Square sq)
-    {
-        //locate all adjacent squares
-        for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
-        {
-            for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y + 1; y++)
-            {
-                //Create a key to use to look in dictionary
-                Vector2 key = new Vector2(x, y);
-
-                //Look in Dictionary with key, if the reference to a square returned is NOT null, 
-                // and not controlled, then select it.
-                squareDictionary.TryGetValue(key, out Square currentSquare);
-                if (currentSquare != null && !currentSquare.IsControlled)
+                list<Square> squaresToSelect = FindAdjacentUncontrolledSquares(sq);
+                if(squaresToSelect != null)
                 {
-                    currentSquare.SelectThisSquare();
+                    SelectSquaresInList(squaresToSelect);
                 }
             }
         }
     }
 
+    //
     //This function will return a list of all the adjacent uncontrolled squares to 
     //whatever square is passed in as a parameter.
+    //
     List<Square> FindAdjacentUncontrolledSquares(Square sq)
     {
         List<Square> adjacentUncontrolledSquares = new List<Square>();
@@ -284,6 +269,16 @@ public class GameController : MonoBehaviour
         }
     }
 
+    //
+    //This method will select all the squares in a list of squares
+    //
+    void SelectSquaresInList(List<Square> listOfSquares)
+    {
+        foreach (Square sq in listOfSquares)
+        {
+            sq.SelectThisSquare();
+        }
+    }
 
     public void GoToNextPlayerTurn()
     {
@@ -324,54 +319,31 @@ public class GameController : MonoBehaviour
         progressButtonImage.sprite = progressSpriteUnSelected;
     }
 
+    //
+    // This function will determine how many bubbles should be generated.
+    //
     private void GenerateBubbles()
     {
         List<Square> squaresToGenerateBubbles = new List<Square>();
 
-
-        foreach (Square sq in squares)
+        foreach (Square sq in allSquaresOnBoard)
         {
             //Find the squares that are controlled by the current player
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
             {
-                //
-                //REPLACE WITH METHOD CALL TO FindAdjacentUncontrolledSquares()
-                //
-                /*
-                Debug.Log("Found a controlled square!!!!!!!!!!!");
-                //Then find the adjacent squares that are not controlled.
-                for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
+                List<Square> adjacentSquares = FindAdjacentUncontrolledSquares(sq);
+                foreach(Square squareInList in adjacentSquares)
                 {
-                    for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y + 1; y++)
+                    if (!squaresToGenerateBubbles.Contains(squareInList))
                     {
-                        //Create a key to use to look in dictionary
-                        Vector2 key = new Vector2(x, y);
-                        Debug.Log("Testing a Square to generate bubbles.");
-                        
-                        squareDictionary.TryGetValue(key, out Square currentSquare);
-
-                        if (currentSquare != null)
-                        {
-                            Debug.Log("Found a square in dictionary.");
-                            if (!currentSquare.IsControlled)
-                            {
-                                if(!squaresToGenerateBubbles.Contains(currentSquare))
-                                {
-                                    squaresToGenerateBubbles.Add(currentSquare);
-                                    Debug.Log("currentSquare added to squaresToGenerateBubble at " + key.ToString());
-                                }
-                                else
-                                {
-                                    Debug.Log("currentSquare is already in the list squaresToGenerateBubbles.");
-                                }
-                            }
-                            else
-                            {
-                                Debug.Log("Square at " + key.ToString() + " is controlled by a player");
-                            }
-                        }
+                        squaresToGenerateBubbles.Add(squareInList);
+                        Debug.Log("Square added to squaresToGenerateBubble at " + key.ToString());
                     }
-                }*/
+                    else
+                    {
+                        Debug.Log("Square is already in the list squaresToGenerateBubbles.");
+                    }
+                }
             }
         }
         //Set bubblesRemaining to the number of squares added to the list.
@@ -398,7 +370,7 @@ public class GameController : MonoBehaviour
 
     private void Progress()
     {
-        foreach (Square sq in squares)
+        foreach (Square sq in allSquaresOnBoard)
         {
             //Find the squares that are controlled by the current player
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
