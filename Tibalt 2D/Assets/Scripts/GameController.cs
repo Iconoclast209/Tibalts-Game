@@ -251,6 +251,40 @@ public class GameController : MonoBehaviour
         }
     }
 
+    //This function will return a list of all the adjacent uncontrolled squares to 
+    //whatever square is passed in as a parameter.
+    List<Square> FindAdjacentUncontrolledSquares(Square sq)
+    {
+        List<Square> adjacentUncontrolledSquares = new List<Square>();
+        //locate all adjacent squares
+        for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
+        {
+            for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y + 1; y++)
+            {
+                //Create a key to use to look in dictionary
+                Vector2 key = new Vector2(x, y);
+
+                //Look in Dictionary with key, if the reference to a square returned is NOT null, 
+                // and not controlled, then add it to the List.
+                squareDictionary.TryGetValue(key, out Square currentSquare);
+                if (currentSquare != null && !currentSquare.IsControlled  && !currentSquare.IsDepleted)
+                {
+                    adjacentUncontrolledSquares.Add(currentSquare);
+                }
+            }
+        }
+        //If there are adjacent uncontrolled squares, return the List
+        if(adjacentUncontrolledSquares.Count > 0)
+        {
+            return adjacentUncontrolledSquares;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
     public void GoToNextPlayerTurn()
     {
         if (CurrentPlayer == NumberOfPlayers || CurrentPlayer <= 0)
@@ -293,11 +327,17 @@ public class GameController : MonoBehaviour
     private void GenerateBubbles()
     {
         List<Square> squaresToGenerateBubbles = new List<Square>();
+
+
         foreach (Square sq in squares)
         {
             //Find the squares that are controlled by the current player
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
             {
+                //
+                //REPLACE WITH METHOD CALL TO FindAdjacentUncontrolledSquares()
+                //
+                /*
                 Debug.Log("Found a controlled square!!!!!!!!!!!");
                 //Then find the adjacent squares that are not controlled.
                 for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
@@ -331,7 +371,7 @@ public class GameController : MonoBehaviour
                             }
                         }
                     }
-                }
+                }*/
             }
         }
         //Set bubblesRemaining to the number of squares added to the list.
