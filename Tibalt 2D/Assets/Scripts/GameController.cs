@@ -225,7 +225,7 @@ public class GameController : MonoBehaviour
             //Find the squares that are controlled by the current player
             if (sq.IsControlled && sq.PlayerControl == CurrentPlayer)
             {
-                list<Square> squaresToSelect = FindAdjacentUncontrolledSquares(sq);
+                List<Square> squaresToSelect = FindAdjacentUncontrolledSquares(sq);
                 if(squaresToSelect != null)
                 {
                     SelectSquaresInList(squaresToSelect);
@@ -337,7 +337,7 @@ public class GameController : MonoBehaviour
                     if (!squaresToGenerateBubbles.Contains(squareInList))
                     {
                         squaresToGenerateBubbles.Add(squareInList);
-                        Debug.Log("Square added to squaresToGenerateBubble at " + key.ToString());
+                        Debug.Log("Square added to squaresToGenerateBubble");
                     }
                     else
                     {
