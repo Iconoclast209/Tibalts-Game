@@ -5,17 +5,29 @@ using UnityEngine;
 
 public class War : Unit
 {
-    Vector2 direction;
-    
-    // Start is called before the first frame update
-    void Start()
+    Vector2 directionOfMovement;
+
+
+    //
+    // CONSTRUCTOR
+    // Need to consider the order of operations for PROGRESS, 
+    // and the mechanism for setting the initial direction of the unit of war.
+    // Initial thought - click multiple times on each unit of war to orient the unit 
+    // and then hit a button to complete/end the process.
+    //
+    void War(Square sq)
     {
-   
+        base.hostSquare = sq;
+        base.strength = sq.BubblesStacked;
     }
 
-    // Update is called once per frame
-    void Update()
+    void SelectDirection()
     {
-        
+
+    }
+
+    void Move()
+    {
+
     }
 }
