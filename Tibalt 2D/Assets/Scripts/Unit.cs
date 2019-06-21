@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-    Sprite sprite;
-    int strength = 0;
-    Square hostSquare; //assume this will be needed, will find out later
+    protected Sprite sprite;
+    protected int strength = 0;
+    protected Square hostSquare; //assume this will be needed, will find out later
 
 
     

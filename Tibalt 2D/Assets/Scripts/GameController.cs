@@ -51,7 +51,7 @@ public class GameController : MonoBehaviour
     //NOT visible in inspector
     int numberOfPlayers = 2;
     int currentPlayer = 1;
-    int bubblesRemaining = 0;
+    int bubblesRemaining = 1;
     public Square[] allSquaresOnBoard;
     SelectedAction currentAction = SelectedAction.firstTurn;
     // 0 = selected color, all other ints relate to player number.
@@ -288,6 +288,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            Debug.Log("Increment Player Number");
             currentPlayer++;
         }
         StartNewTurn();
@@ -356,6 +357,10 @@ public class GameController : MonoBehaviour
         Debug.Log("Starting a new turn!");
         bubblesRemaining = 0;
         GenerateBubbles();
+        if(CurrentAction == SelectedAction.firstTurn)
+        {
+            bubblesRemaining = 1;
+        }
         UpdatePlayerAndBubbleDisplay();
     }
 

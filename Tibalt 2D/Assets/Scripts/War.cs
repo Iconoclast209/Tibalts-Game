@@ -15,7 +15,7 @@ public class War : Unit
     // Initial thought - click multiple times on each unit of war to orient the unit 
     // and then hit a button to complete/end the process.
     //
-    void War(Square sq)
+    public War(Square sq)
     {
         base.hostSquare = sq;
         base.strength = sq.BubblesStacked;

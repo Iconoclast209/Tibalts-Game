@@ -69,33 +69,24 @@ public class Square : MonoBehaviour
             return;
         }
 
-        if (!isSelected && gameController.CurrentAction != SelectedAction.hold)
+        if(gameController.CurrentAction == SelectedAction.seed && isSelected && gameController.BubblesRemaining > 0)
         {
-            if(gameController.CurrentAction == SelectedAction.stack && PlayerControl == gameController.CurrentPlayer)
+            SeedThisSquare();
+        }
+        else if(gameController.CurrentAction == SelectedAction.stack && PlayerControl == gameController.CurrentPlayer)
+        {
+            if(gameController.BubblesRemaining > 0)
             {
-                SelectThisSquare();
-            }
-            else if(gameController.CurrentAction == SelectedAction.seed)
-            {
-                SelectThisSquare();
-            }
-            else
-            {
-                //Do Nothing
+                if(!isSelected)
+                {
+                    SelectThisSquare();
+                }
+                else
+                {
+                    StackThisSquare();
+                }
             }
         }
-        else
-        {
-            if(gameController.CurrentAction == SelectedAction.seed && isControlled == false && gameController.BubblesRemaining >0)
-            {
-                SeedThisSquare();
-            }
-            else if(gameController.CurrentAction == SelectedAction.stack && playerControl == gameController.CurrentPlayer && gameController.BubblesRemaining > 0)
-            {
-                StackThisSquare();
-            }
-        }
-        
     }
 
     void FirstTurn()
@@ -149,7 +140,6 @@ public class Square : MonoBehaviour
         {
             image.color = gameController.ReturnPlayerColor(playerControl);
         }
-
     }
 
     void StackThisSquare()
@@ -166,17 +156,16 @@ public class Square : MonoBehaviour
     //This function will take ownership of a square and stack one bubble on it.
     void SeedThisSquare()
     {
+        Debug.Log("Seeding Square");
         isControlled = true;
-        //Set controlled by current player
         playerControl = gameController.CurrentPlayer;
-        //Add one bubble to the square's stack
         bubblesStacked++;
+        Debug.Log("Stacking a bubble");
         if (text.IsActive() == false)
         {
             text.gameObject.SetActive(true);
         }
         text.text = bubblesStacked.ToString();
-
         // Set the square's color to the player color.
         image.color = gameController.ReturnPlayerColor(playerControl);
         gameController.UseABubble();
