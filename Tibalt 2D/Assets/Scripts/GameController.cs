@@ -52,6 +52,7 @@ public class GameController : MonoBehaviour
     int numberOfPlayers = 2;
     int currentPlayer = 1;
     int bubblesRemaining = 1;
+    bool seedButtonClickedThisTurn = false;
     public Square[] allSquaresOnBoard;
     SelectedAction currentAction = SelectedAction.firstTurn;
     // 0 = selected color, all other ints relate to player number.
@@ -140,11 +141,20 @@ public class GameController : MonoBehaviour
     {
         if (currentAction != SelectedAction.firstTurn)
         {
-            currentAction = SelectedAction.seed;
-            UnSelectAllButtons();
-            UnSelectAllSquares();
-            seedButtonImage.sprite = seedSpriteSelected;
-            SelectSquaresEligibleToSeed();
+            //Should only be able to click button once per turn.
+            if(!seedButtonClickedThisTurn)
+            {
+                seedButtonClickedThisTurn = true;
+                currentAction = SelectedAction.seed;
+                UnSelectAllButtons();
+                UnSelectAllSquares();
+                seedButtonImage.sprite = seedSpriteSelected;
+                SelectSquaresEligibleToSeed();
+            }
+            else
+            {
+                Debug.Log("You have already clicked the seed button once this turn.");
+            }
         }
     }
 
@@ -355,6 +365,7 @@ public class GameController : MonoBehaviour
     private void StartNewTurn()
     {
         Debug.Log("Starting a new turn!");
+        seedButtonClickedThisTurn = false;
         bubblesRemaining = 0;
         GenerateBubbles();
         if(CurrentAction == SelectedAction.firstTurn)

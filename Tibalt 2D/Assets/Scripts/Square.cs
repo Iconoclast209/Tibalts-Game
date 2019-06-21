@@ -169,5 +169,6 @@ public class Square : MonoBehaviour
         // Set the square's color to the player color.
         image.color = gameController.ReturnPlayerColor(playerControl);
         gameController.UseABubble();
+        DeSelectThisSquare();
     }
 }
