@@ -7,6 +7,7 @@ public enum SelectedAction
 {
     seed,
     stack,
+    progress,
     hold,
     firstTurn,
     buttonsDisabled
@@ -182,13 +183,13 @@ public class GameController : MonoBehaviour
     {
         if (currentAction != SelectedAction.firstTurn)
         {
-            currentAction = SelectedAction.hold;
+            currentAction = SelectedAction.progress;
             
             UnSelectAllButtons();
             UnSelectAllSquares();
             progressButtonImage.sprite = progressSpriteSelected;
             Progress();
-            Invoke("ResetProgressButton", 1.0f);
+            //Invoke("ResetProgressButton", 1.0f);
 
         }
     }
@@ -328,7 +329,6 @@ public class GameController : MonoBehaviour
 
     private void ResetEndTurnButton()
     {
-        //Deselect the End Turn Button
         endTurnButtonImage.sprite = endTurnSpriteUnSelected;
     }
 
