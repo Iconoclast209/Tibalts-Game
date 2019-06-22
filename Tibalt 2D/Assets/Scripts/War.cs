@@ -15,10 +15,10 @@ public class War : Unit
     // Initial thought - click multiple times on each unit of war to orient the unit 
     // and then hit a button to complete/end the process.
     //
-    public War(Square sq)
+
+    public void HandleClick()
     {
-        base.hostSquare = sq;
-        base.strength = sq.BubblesStacked;
+        //Handle a click on the Unit of War
     }
 
     void SelectDirection()

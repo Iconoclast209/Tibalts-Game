@@ -8650,7 +8650,12 @@ MonoBehaviour:
   endTurnSpriteUnSelected: {fileID: 21300000, guid: 43c4b642d08770844948f45bdf109aa7,
     type: 3}
   firstTurn: {fileID: 1030293}
-  squares: []
+  prefabUnitOfWar: {fileID: 8721509043188627712, guid: ca4e192352ca9404ea1070cdb670107c,
+    type: 3}
+  prefabUnitOfArt: {fileID: 8716097727712929097, guid: 85b3d35cf8c458d4e97123e38aa1bf44,
+    type: 3}
+  canvas: {fileID: 393067410}
+  allSquaresOnBoard: []
 --- !u!4 &1511496962
 Transform:
   m_ObjectHideFlags: 0

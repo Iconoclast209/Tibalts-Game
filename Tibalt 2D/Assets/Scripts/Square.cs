@@ -171,4 +171,11 @@ public class Square : MonoBehaviour
         gameController.UseABubble();
         DeSelectThisSquare();
     }
+
+    public void ConvertToUnit()
+    {
+        bubblesStacked = 0;
+        isDepleted = true;
+        isControlled = false;
+    }
 }

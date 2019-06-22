@@ -47,6 +47,13 @@ public class GameController : MonoBehaviour
     Sprite endTurnSpriteUnSelected;
     [SerializeField]
     GameObject firstTurn;
+    [SerializeField]
+    GameObject prefabUnitOfWar;
+    [SerializeField]
+    GameObject prefabUnitOfArt;
+    [SerializeField]
+    Canvas canvas;
+
 
     //NOT visible in inspector
     int numberOfPlayers = 2;
@@ -395,21 +402,37 @@ public class GameController : MonoBehaviour
                 if(sq.BubblesStacked % 2 == 0)
                 {
                     //This is an even number, create a Unit of War
-                    Debug.Log("Creating Unit of War at " + sq.Location.ToString());
+                    CreateUnit(sq, prefabUnitOfWar);
                 }
                 else if(sq.BubblesStacked % 3 ==0)
                 {
                     //This is an odd number divisible by 3, create a Unit of Art
-                    Debug.Log("Creating Unit of Art at " + sq.Location.ToString());
+                    CreateUnit(sq, prefabUnitOfArt);
                 }
                 else
                 {
                     //The square will remain as-is.
                 }
-                
-                
             }
         }
+    }
+
+    void CreateUnit(Square sq, GameObject prefab)
+    {
+        Debug.Log("Creating Unit at " + sq.Location.ToString());
+        Vector2 spawnPosition = DetermineSpawnPosition(sq);
+        GameObject newUnit = Instantiate(prefab, canvas.GetComponent<RectTransform>());
+        newUnit.GetComponent<RectTransform>().anchoredPosition = spawnPosition;
+        newUnit.GetComponent<Unit>().SetupUnit(sq);
+    }
+
+    //
+    //Determine Spawn Position for Units of Art or War
+    //
+    Vector2 DetermineSpawnPosition(Square sq)
+    {
+        RectTransform rt = sq.GetComponent<RectTransform>();
+        return new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y);
     }
 
     #endregion
