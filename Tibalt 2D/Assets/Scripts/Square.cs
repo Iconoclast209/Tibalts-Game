@@ -177,5 +177,11 @@ public class Square : MonoBehaviour
         bubblesStacked = 0;
         isDepleted = true;
         isControlled = false;
+        image.color = Color.black;
+    }
+
+    public Color ReturnCurrentColor()
+    {
+        return image.color;
     }
 }
