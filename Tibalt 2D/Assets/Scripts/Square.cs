@@ -11,7 +11,7 @@ public class Square : MonoBehaviour
     bool isSelected = false;
     int playerControl = 0;
     int bubblesStacked = 0;
-    Vector2 location;
+    Vector2Int location;
     Image image;
     Text text;
     RectTransform rectTransform;
@@ -30,7 +30,7 @@ public class Square : MonoBehaviour
         get { return isControlled; }
     }
 
-    public Vector2 Location
+    public Vector2Int Location
     {
         get { return location; }
     }
@@ -56,7 +56,7 @@ public class Square : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         text = gameObject.GetComponentInChildren<Text>();
         text.gameObject.SetActive(false);
-        location = new Vector2((rectTransform.anchoredPosition.x + 400) / 100, (rectTransform.anchoredPosition.y + 400) / 100);
+        location = new Vector2Int((int)(rectTransform.anchoredPosition.x + 400) / 100, (int)(rectTransform.anchoredPosition.y + 400) / 100);
     }
 
    

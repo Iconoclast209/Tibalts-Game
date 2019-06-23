@@ -70,7 +70,7 @@ public class GameController : MonoBehaviour
     Image stackButtonImage;
     Image progressButtonImage;
     Image endTurnButtonImage;
-    Dictionary<Vector2, Square> squareDictionary = new Dictionary<Vector2, Square>();
+    Dictionary<Vector2Int, Square> squareDictionary = new Dictionary<Vector2Int, Square>();
 
     #endregion
 
@@ -260,12 +260,12 @@ public class GameController : MonoBehaviour
     {
         List<Square> adjacentUncontrolledSquares = new List<Square>();
         //locate all adjacent squares
-        for (int x = (int)sq.Location.x - 1; x <= (int)sq.Location.x + 1; x++)
+        for (int x = sq.Location.x - 1; x <= sq.Location.x + 1; x++)
         {
-            for (int y = (int)sq.Location.y - 1; y <= (int)sq.Location.y + 1; y++)
+            for (int y = sq.Location.y - 1; y <= sq.Location.y + 1; y++)
             {
                 //Create a key to use to look in dictionary
-                Vector2 key = new Vector2(x, y);
+                Vector2Int key = new Vector2Int(x, y);
 
                 //Look in Dictionary with key, if the reference to a square returned is NOT null, 
                 // and not controlled, then add it to the List.
@@ -420,7 +420,7 @@ public class GameController : MonoBehaviour
     void CreateUnit(Square sq, GameObject prefab)
     {
         Debug.Log("Creating Unit at " + sq.Location.ToString());
-        Vector2 spawnPosition = DetermineSpawnPosition(sq);
+        Vector2Int spawnPosition = DetermineSpawnPosition(sq);
         GameObject newUnit = Instantiate(prefab, canvas.GetComponent<RectTransform>());
         newUnit.GetComponent<RectTransform>().anchoredPosition = spawnPosition;
         newUnit.GetComponent<Unit>().SetupUnit(sq);
@@ -429,10 +429,10 @@ public class GameController : MonoBehaviour
     //
     //Determine Spawn Position for Units of Art or War
     //
-    Vector2 DetermineSpawnPosition(Square sq)
+    Vector2Int DetermineSpawnPosition(Square sq)
     {
         RectTransform rt = sq.GetComponent<RectTransform>();
-        return new Vector2(rt.anchoredPosition.x, rt.anchoredPosition.y);
+        return new Vector2Int((int)rt.anchoredPosition.x, (int)rt.anchoredPosition.y);
     }
 
     #endregion
