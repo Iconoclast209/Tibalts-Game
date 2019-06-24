@@ -184,4 +184,9 @@ public class Square : MonoBehaviour
     {
         return image.color;
     }
+
+    public RectTransform ReturnRectTransform()
+    {
+        return rectTransform;
+    }
 }
