@@ -23,7 +23,8 @@ public class War : Unit
 
     public void HandleClick()
     {
-        //Handle a click on the Unit of War
+        //Handle a click on the Unit of War immediately after it is created
+        //TODO Determine how to prevent rotation until it hits the edge of the board or a Unit of Art above its kill strength.
         if(gameController.CurrentAction == SelectedAction.progress)
         {
             Debug.Log("Processing Mouse Click on Unit of War.");

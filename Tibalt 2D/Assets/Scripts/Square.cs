@@ -129,12 +129,14 @@ public class Square : MonoBehaviour
     public void DeSelectThisSquare()
     {
         isSelected = false;
-        //
-        //TO DO:  Revert to previous/base sprite.
-        //        
-        if(!isControlled)
+
+        if (!IsControlled && !IsDepleted)
         {
             image.color = Color.white;
+        }
+        else if(IsDepleted)
+        {
+            image.color = Color.black;
         }
         else
         {
