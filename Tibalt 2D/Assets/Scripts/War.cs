@@ -37,23 +37,23 @@ public class War : Unit
             if (currentVectorIndex == 0)
             {
                 rectTransform.rotation = Quaternion.identity;
-                text.GetComponent<rectTransform>().rotation = Quaternion.identity;
+                text.GetComponent<RectTransform>().rotation = Quaternion.identity;
             }
             else
             {
                 // Rotate Image by 45 degrees each time it is clicked on.
                 rectTransform.Rotate(0f, 0f, -45f);
                 // Also, counter rotate text to make it readable.
-                text.GetComponent<rectTransform>().Rotate(0f, 0f, 45f);
+                text.GetComponent<RectTransform>().Rotate(0f, 0f, 45f);
             }
-        } while (!CheckForValidDirection())  //Check to see if direction is a valid direction to move, otherwise rotate one more time.
+        } while (!CheckForValidDirection());  //Check to see if direction is a valid direction to move, otherwise rotate one more time.
     }
 
     void IncrementVectorIndex()
     {
         currentVectorIndex++;
 
-        if (currentVectorIndex > vectorDirectionArray.Length)
+        if (currentVectorIndex > vectorDirectionArray.Length-1)
         {
             currentVectorIndex = 0;
         }
@@ -61,10 +61,11 @@ public class War : Unit
 
     public bool CheckForValidDirection()
     {
+        Debug.Log("Current Vector Index is " + currentVectorIndex.ToString());
         // Add the current direction vector to the hostSquare's location vector.
         Vector2Int destinationSquareLocation = hostSquare.Location + vectorDirectionArray[currentVectorIndex];
         // Look in dictionary to see if the destination location exists on the board
-        gameController.squareDictionary.TryGetValue(key, out Square currentSquare);
+        gameController.SquareDictionary.TryGetValue(destinationSquareLocation, out Square currentSquare);
         // TODO may need to check if there is a unit of art with greater strength?
         if (currentSquare != null)
         {

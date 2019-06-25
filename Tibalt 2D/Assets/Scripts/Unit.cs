@@ -24,9 +24,9 @@ public class Unit : MonoBehaviour
         get { return hostSquare; }
     }
 
-    private void Start()
+    private void Awake()
     {
-        gameController = FindObjectOfType<gameController>();
+        gameController = FindObjectOfType<GameController>();
     }
 
     public void SetupUnit(Square sq)

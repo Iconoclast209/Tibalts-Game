@@ -101,6 +101,11 @@ public class GameController : MonoBehaviour
         get { return bubblesRemaining; }
     }
 
+    public Dictionary<Vector2Int, Square> SquareDictionary
+    {
+        get { return squareDictionary; }
+    }
+
     #endregion
 
     #region METHODS
