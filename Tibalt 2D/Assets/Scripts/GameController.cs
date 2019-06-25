@@ -385,6 +385,7 @@ public class GameController : MonoBehaviour
             bubblesRemaining = 1;
         }
         UpdatePlayerAndBubbleDisplay();
+        MoveAllUnitsOfWarForCurrentPlayer();
     }
 
     public void UseABubble()
@@ -440,5 +441,17 @@ public class GameController : MonoBehaviour
         return new Vector2Int((int)rt.anchoredPosition.x, (int)rt.anchoredPosition.y);
     }
 
+
+    void MoveAllUnitsOfWarForCurrentPlayer()
+    {
+        War[] unitsOfWarOnBoard = FindObjectsOfType<War>();
+        foreach (War unitOfWar in unitsOfWarOnBoard)
+        {
+            if (unitOfWar.PlayerControl == CurrentPlayer)
+            {
+                unitOfWar.AttemptToMove();
+            }
+        }
+    }
     #endregion
 }

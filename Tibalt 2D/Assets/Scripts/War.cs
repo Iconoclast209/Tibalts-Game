@@ -77,7 +77,7 @@ public class War : Unit
         }
     }
 
-    void Move()
+    public void AttemptToMove()
     {
         if(CheckForValidDirection())
         {
@@ -85,18 +85,55 @@ public class War : Unit
             Vector2Int destinationSquareLocation = hostSquare.Location + vectorDirectionArray[currentVectorIndex];
             gameController.SquareDictionary.TryGetValue(destinationSquareLocation, out Square targetSquare);
 
-            // Check to see if a unit is present in the target square
-            // if it is, then compare strength
-            //if the strength is 
+            //Find all units, then Check to see if a unit is present in the target square
+            Unit[] unitsOnBoard = FindObjectsOfType<Unit>();
+            Unit targetUnit = null;
+            foreach (Unit unit in unitsOnBoard)
+            {
+                if(unit.HostSquare == targetSquare)
+                {
+                    targetUnit = unit;
+                    break;
+                }
+            }
 
-            // Move the unit of war
-            rectTransform.anchoredPosition = targetSquare.GetComponent<RectTransform>().anchoredPosition;
-            // Update the host square for the unit
-            hostSquare = targetSquare;
+            if (targetUnit != null)
+            {
+                // Compare strength
+                if(Strength > targetUnit.Strength)
+                {
+                    //This unit beats the target Unit and move proceeds.
+                    Move(targetSquare);
+                }
+                else if(Strength == targetUnit.Strength)
+                {
+                    //Stalemate, this unit does not move.
+                    //Flash a message
+                    return;
+                }
+                else
+                {
+                    //This unit is destroyed and does not move.
+                    Debug.Log("This unit will be destroyed.");
+                }
+            }
+            else
+            {
+                Move(targetSquare);
+            }
         }
         else
         {
             // Message and allow the unit to be redirected.
         }
+    }
+
+    private void Move(Square targetSquare)
+    {
+        // Move the unit of war
+        rectTransform.anchoredPosition = targetSquare.GetComponent<RectTransform>().anchoredPosition;
+        // Update the host square for the unit
+        hostSquare = targetSquare;
+        hostSquare.DestroyThisSquare();
     }
 }

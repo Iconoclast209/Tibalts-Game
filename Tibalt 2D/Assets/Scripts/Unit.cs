@@ -24,6 +24,11 @@ public class Unit : MonoBehaviour
         get { return hostSquare; }
     }
 
+    public int PlayerControl
+    {
+        get { return playerControl; }
+    }
+
     private void Awake()
     {
         gameController = FindObjectOfType<GameController>();

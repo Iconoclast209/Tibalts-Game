@@ -176,9 +176,8 @@ public class Square : MonoBehaviour
 
     public void ConvertToUnit()
     {
-        bubblesStacked = 0;
+        DestroyThisSquare();
         isDepleted = true;
-        isControlled = false;
         image.color = Color.black;
     }
 
@@ -190,5 +189,15 @@ public class Square : MonoBehaviour
     public RectTransform ReturnRectTransform()
     {
         return rectTransform;
+    }
+
+    public void DestroyThisSquare()
+    {
+        isControlled = false;
+        playerControl = 0;
+        image.color = Color.white;
+        bubblesStacked = 0;
+        text.text = BubblesStacked.ToString();
+        text.gameObject.SetActive(false);
     }
 }
