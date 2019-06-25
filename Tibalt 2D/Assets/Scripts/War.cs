@@ -7,16 +7,13 @@ using UnityEngine.UI;
 public class War : Unit
 {
     [SerializeField]
-    Vector2Int[] vectorArray;
+    Vector2Int[] vectorDirectionArray;
     
-    GameController gameController;
     RectTransform rectTransform;
     int currentVectorIndex = 0;
 
-
     private void Start()
     {
-        gameController = FindObjectOfType<GameController>();
         rectTransform = GetComponent<RectTransform>();
         text = GetComponentInChildren<Text>();
     }
@@ -28,29 +25,55 @@ public class War : Unit
         if(gameController.CurrentAction == SelectedAction.progress)
         {
             Debug.Log("Processing Mouse Click on Unit of War.");
-            //Rotate and set direction.
-            currentVectorIndex++;
-
-            if (currentVectorIndex > vectorArray.Length)
-            {
-                currentVectorIndex = 0;
-            }
-
             RotateUnit();
         }
     }
 
     void RotateUnit()
     {
-        if(currentVectorIndex == 0)
+        do
         {
-            rectTransform.rotation = Quaternion.identity;
+            IncrementVectorIndex();
+            if (currentVectorIndex == 0)
+            {
+                rectTransform.rotation = Quaternion.identity;
+                text.GetComponent<rectTransform>().rotation = Quaternion.identity;
+            }
+            else
+            {
+                // Rotate Image by 45 degrees each time it is clicked on.
+                rectTransform.Rotate(0f, 0f, -45f);
+                // Also, counter rotate text to make it readable.
+                text.GetComponent<rectTransform>().Rotate(0f, 0f, 45f);
+            }
+        } while (!CheckForValidDirection())  //Check to see if direction is a valid direction to move, otherwise rotate one more time.
+    }
+
+    void IncrementVectorIndex()
+    {
+        currentVectorIndex++;
+
+        if (currentVectorIndex > vectorDirectionArray.Length)
+        {
+            currentVectorIndex = 0;
+        }
+    }
+
+    public bool CheckForValidDirection()
+    {
+        // Add the current direction vector to the hostSquare's location vector.
+        Vector2Int destinationSquareLocation = hostSquare.Location + vectorDirectionArray[currentVectorIndex];
+        // Look in dictionary to see if the destination location exists on the board
+        gameController.squareDictionary.TryGetValue(key, out Square currentSquare);
+        // TODO may need to check if there is a unit of art with greater strength?
+        if (currentSquare != null)
+        {
+            return true;
         }
         else
         {
-            rectTransform.Rotate(0f, 0f, -45f);
+            return false;
         }
-        //Check to see if direction is a valid direction to move, otherwise rotate one more time.
     }
 
     void Move()

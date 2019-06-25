@@ -7,7 +7,9 @@ public class Unit : MonoBehaviour
 {
 
     protected int strength = 0;
-    protected Square hostSquare; //assume this will be needed, will find out later
+    protected Square hostSquare;
+    protected int playerControl;
+    protected GameController gameController;
     public Image image;
     public Text text;
 
@@ -22,14 +24,19 @@ public class Unit : MonoBehaviour
         get { return hostSquare; }
     }
 
+    private void Start()
+    {
+        gameController = FindObjectOfType<gameController>();
+    }
+
     public void SetupUnit(Square sq)
     {
         hostSquare = sq;
         strength = sq.BubblesStacked;
         image.color = sq.ReturnCurrentColor();
+        playerControl = gameController.CurrentPlayer;
         UpdateTextValue();
         sq.ConvertToUnit();
-
     }
 
     public void UpdateTextValue()
