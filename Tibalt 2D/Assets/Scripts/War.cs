@@ -65,9 +65,9 @@ public class War : Unit
         // Add the current direction vector to the hostSquare's location vector.
         Vector2Int destinationSquareLocation = hostSquare.Location + vectorDirectionArray[currentVectorIndex];
         // Look in dictionary to see if the destination location exists on the board
-        gameController.SquareDictionary.TryGetValue(destinationSquareLocation, out Square currentSquare);
+        gameController.SquareDictionary.TryGetValue(destinationSquareLocation, out Square targetSquare);
         // TODO may need to check if there is a unit of art with greater strength?
-        if (currentSquare != null)
+        if (targetSquare != null)
         {
             return true;
         }
@@ -79,6 +79,24 @@ public class War : Unit
 
     void Move()
     {
+        if(CheckForValidDirection())
+        {
+            // Identify the target square to move unit of war to
+            Vector2Int destinationSquareLocation = hostSquare.Location + vectorDirectionArray[currentVectorIndex];
+            gameController.SquareDictionary.TryGetValue(destinationSquareLocation, out Square targetSquare);
 
+            // Check to see if a unit is present in the target square
+            // if it is, then compare strength
+            //if the strength is 
+
+            // Move the unit of war
+            rectTransform.anchoredPosition = targetSquare.GetComponent<RectTransform>().anchoredPosition;
+            // Update the host square for the unit
+            hostSquare = targetSquare;
+        }
+        else
+        {
+            // Message and allow the unit to be redirected.
+        }
     }
 }
