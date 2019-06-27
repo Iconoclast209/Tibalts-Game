@@ -53,6 +53,10 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject prefabUnitOfArt;
     [SerializeField]
+    GameObject unitDestroyedMessage;
+    [SerializeField]
+    GameObject gameOverMessage;
+    [SerializeField]
     Canvas canvas;
 
 
@@ -206,8 +210,19 @@ public class GameController : MonoBehaviour
         UnSelectAllButtons();
         UnSelectAllSquares();
         endTurnButtonImage.sprite = endTurnSpriteSelected;
-        GoToNextPlayerTurn();
-        Invoke("ResetEndTurnButton", 1.0f);
+        SetAllUnitsOfWarToNotRotate();
+
+        if (!CheckForEndGame())
+        {
+            GoToNextPlayerTurn();
+            Invoke("ResetEndTurnButton", 1.0f);
+        }
+        else
+        {
+            gameOverMessage.SetActive(true);
+            gameOverMessage.GetComponent<Image>().color = ReturnPlayerColor(CurrentPlayer);
+        }
+        
     }
 
 
@@ -453,5 +468,58 @@ public class GameController : MonoBehaviour
             }
         }
     }
+
+    public void ShowUnitDestroyedMessage()
+    {
+        unitDestroyedMessage.SetActive(true);
+        Invoke("HideUnitDestroyedMessage", 1.0f);
+
+    }
+
+    void HideUnitDestroyedMessage()
+    {
+        unitDestroyedMessage.SetActive(false);
+    }
+
+    void SetAllUnitsOfWarToNotRotate()
+    {
+        War[] unitsOfWar = FindObjectsOfType<War>();
+        foreach (War unit in unitsOfWar)
+        {
+            if(unit.PlayerControl == CurrentPlayer)
+            {
+                unit.SetCanBeRotatedToFalse();
+            }
+        }
+
+    }
+
+    //Is the game over? true = yes
+    bool CheckForEndGame()
+    {
+        Debug.Log("Check for End of Game.");
+        int opposingPlayerControlledSquares = 0;
+        foreach (Square sq in allSquaresOnBoard)
+        {
+            if(sq.IsControlled && sq.PlayerControl != CurrentPlayer)
+            {
+                opposingPlayerControlledSquares++;
+            }
+        }
+
+        Debug.Log("Found this many opposing controlled squares: " + opposingPlayerControlledSquares.ToString());
+
+        if (opposingPlayerControlledSquares <= 0)
+        {
+            Debug.Log("Game has ended.");
+            return true;
+        }
+        else
+        {
+            Debug.Log("Game will continue.");
+            return false;
+        }
+    }
+
     #endregion
 }

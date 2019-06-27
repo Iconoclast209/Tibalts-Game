@@ -11,6 +11,7 @@ public class War : Unit
     
     RectTransform rectTransform;
     int currentVectorIndex = 0;
+    bool canBeRotated = true;
 
     private void Start()
     {
@@ -21,32 +22,31 @@ public class War : Unit
     public void HandleClick()
     {
         //Handle a click on the Unit of War immediately after it is created
-        //TODO Determine how to prevent rotation until it hits the edge of the board or a Unit of Art above its kill strength.
-        if(gameController.CurrentAction == SelectedAction.progress)
-        {
-            Debug.Log("Processing Mouse Click on Unit of War.");
-            RotateUnit();
-        }
+        Debug.Log("Processing Mouse Click on Unit of War.");
+        RotateUnit();
     }
 
     void RotateUnit()
     {
-        do
+        if(canBeRotated)
         {
-            IncrementVectorIndex();
-            if (currentVectorIndex == 0)
+            do
             {
-                rectTransform.rotation = Quaternion.identity;
-                text.GetComponent<RectTransform>().rotation = Quaternion.identity;
-            }
-            else
-            {
-                // Rotate Image by 45 degrees each time it is clicked on.
-                rectTransform.Rotate(0f, 0f, -45f);
-                // Also, counter rotate text to make it readable.
-                text.GetComponent<RectTransform>().Rotate(0f, 0f, 45f);
-            }
-        } while (!CheckForValidDirection());  //Check to see if direction is a valid direction to move, otherwise rotate one more time.
+                IncrementVectorIndex();
+                if (currentVectorIndex == 0)
+                {
+                    rectTransform.rotation = Quaternion.identity;
+                    text.GetComponent<RectTransform>().rotation = Quaternion.identity;
+                }
+                else
+                {
+                    // Rotate Image by 45 degrees each time it is clicked on.
+                    rectTransform.Rotate(0f, 0f, -45f);
+                    // Also, counter rotate text to make it readable.
+                    text.GetComponent<RectTransform>().Rotate(0f, 0f, 45f);
+                }
+            } while (!CheckForValidDirection());  //Check to see if direction is a valid direction to move, otherwise rotate one more time.
+        }
     }
 
     void IncrementVectorIndex()
@@ -66,7 +66,6 @@ public class War : Unit
         Vector2Int destinationSquareLocation = hostSquare.Location + vectorDirectionArray[currentVectorIndex];
         // Look in dictionary to see if the destination location exists on the board
         gameController.SquareDictionary.TryGetValue(destinationSquareLocation, out Square targetSquare);
-        // TODO may need to check if there is a unit of art with greater strength?
         if (targetSquare != null)
         {
             return true;
@@ -79,6 +78,7 @@ public class War : Unit
 
     public void AttemptToMove()
     {
+        Debug.Log("Unit of War Attempt to Move.");
         if(CheckForValidDirection())
         {
             // Identify the target square to move unit of war to
@@ -99,22 +99,39 @@ public class War : Unit
 
             if (targetUnit != null)
             {
-                // Compare strength
-                if(Strength > targetUnit.Strength)
+                if(targetUnit.GetComponent<Art>() != null)
                 {
-                    //This unit beats the target Unit and move proceeds.
-                    Move(targetSquare);
-                }
-                else if(Strength == targetUnit.Strength)
-                {
-                    //Stalemate, this unit does not move.
-                    //Flash a message
-                    return;
+                    if(Strength >= (2 * targetUnit.Strength))
+                    {
+                        Destroy(targetUnit.gameObject);
+                        Move(targetSquare);
+                    }
+                    else
+                    {
+                        Destroy(this.gameObject);
+                        gameController.ShowUnitDestroyedMessage();
+                    }
                 }
                 else
                 {
-                    //This unit is destroyed and does not move.
-                    Debug.Log("This unit will be destroyed.");
+                    // Compare strength
+                    if (Strength > targetUnit.Strength)
+                    {
+                        //This unit beats the target Unit and move proceeds.
+                        Destroy(targetUnit.gameObject);
+                        Move(targetSquare);
+                    }
+                    else if (Strength == targetUnit.Strength)
+                    {
+                        //Stalemate, this unit does not move.
+                        //Flash a message
+                        return;
+                    }
+                    else
+                    {
+                        Destroy(this.gameObject);
+                        gameController.ShowUnitDestroyedMessage();
+                    }
                 }
             }
             else
@@ -125,6 +142,8 @@ public class War : Unit
         else
         {
             // Message and allow the unit to be redirected.
+            Debug.Log("canBeRotated is set to true");
+            canBeRotated = true;
         }
     }
 
@@ -135,5 +154,10 @@ public class War : Unit
         // Update the host square for the unit
         hostSquare = targetSquare;
         hostSquare.DestroyThisSquare();
+    }
+
+    public void SetCanBeRotatedToFalse()
+    {
+        canBeRotated = false;
     }
 }
