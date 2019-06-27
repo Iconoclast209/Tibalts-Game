@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -134,14 +135,30 @@ public class GameController : MonoBehaviour
         UpdatePlayerAndBubbleDisplay();
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
+
     //This method will add all of the squares to the dictionary 
     //which are accessible by their positions relative to the bottom 
     //left corner of the board.
     void AddSquaresToDictionary()
     {
+        squareDictionary.Clear();
         foreach (Square sq in allSquaresOnBoard)
         {
-            squareDictionary.Add(sq.Location, sq);
+            try
+            {
+                squareDictionary.Add(sq.Location, sq);
+            }
+            catch (ArgumentException e)
+            {
+                Debug.Log(e.Message);
+            }
         }
     }
 

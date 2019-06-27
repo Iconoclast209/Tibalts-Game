@@ -48,7 +48,7 @@ public class Square : MonoBehaviour
     #endregion
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         // Set References and populate location field.
         image = GetComponent<Image>();
@@ -57,6 +57,7 @@ public class Square : MonoBehaviour
         text = gameObject.GetComponentInChildren<Text>();
         text.gameObject.SetActive(false);
         location = new Vector2Int((int)(rectTransform.anchoredPosition.x + 400) / 100, (int)(rectTransform.anchoredPosition.y + 400) / 100);
+        Debug.Log("This square is at location " + location.ToString());
     }
 
    
